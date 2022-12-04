@@ -29,7 +29,7 @@ class _AfficherUtilisateurState extends State<AfficherUtilisateur> {
     // on peut utiliser FutureBuilder avec future et .get() mais ça ne sera pas synchroniser
     return StreamBuilder<QuerySnapshot>(
       stream: utilisateurs,
-      builder: (BuildContext context, snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Text(
             'Erreur',
@@ -48,7 +48,7 @@ class _AfficherUtilisateurState extends State<AfficherUtilisateur> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: snapshot.data!.docs.map((document) {
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> utilisateur =
                     document.data() as Map<String, dynamic>;
                 return Card(
@@ -304,6 +304,7 @@ class _AfficherUtilisateurState extends State<AfficherUtilisateur> {
                                 )),
                             IconButton(
                                 onPressed: () {
+// ------------------------------ ALERT DE SUPPRESSION -------------------------
                                   showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
@@ -320,10 +321,10 @@ class _AfficherUtilisateurState extends State<AfficherUtilisateur> {
                                                       .spaceBetween,
                                               children: [
                                                 ElevatedButton(
-                                                    style: const ButtonStyle(
-                                                        backgroundColor:
-                                                            MaterialStatePropertyAll(
-                                                                Colors.red)),
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                Colors.red),
                                                     onPressed: () {
                                                       suprimerUtilisateur(
                                                           utilisateur['id']);

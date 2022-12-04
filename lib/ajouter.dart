@@ -21,7 +21,7 @@ class _AjouterWidgetState extends State<AjouterWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ajouter"),
+        title: const Text("Ajouter un film"),
         centerTitle: true,
       ),
       body: Padding(

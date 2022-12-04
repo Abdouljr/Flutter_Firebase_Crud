@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/ajouter.dart';
 import 'package:flutter_firebase/crud/pages/controle_page.dart';
+import 'package:flutter_firebase/crud/repositories/supprimerFilm.dart';
 import 'package:flutter_firebase/pages/details_film.dart';
 
 Future<void> main() async {
@@ -39,23 +40,23 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // title: const Text("Flutter Firebase"),
-        // leading: IconButton(
-        //   icon: const Icon(Icons.add),
-        //   onPressed: () {
-        //     Navigator.of(context).push(
-        //       MaterialPageRoute(
-        //         builder: (BuildContext context) {
-        //           return const AjouterWidget();
-        //         },
-        //         fullscreenDialog: true,
-        //       ),
-        //     );
-        //   },
-        // ),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      // title: const Text("Flutter Firebase"),
+      // leading: IconButton(
+      //   icon: const Icon(Icons.add),
+      //   onPressed: () {
+      //     Navigator.of(context).push(
+      //       MaterialPageRoute(
+      //         builder: (BuildContext context) {
+      //           return const AjouterWidget();
+      //         },
+      //         fullscreenDialog: true,
+      //       ),
+      //     );
+      //   },
+      // ),
+      // centerTitle: true,
+      // ),
       body: const FilmsWidget(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.greenAccent,
@@ -98,19 +99,6 @@ class _FilmsWidgetState extends State<FilmsWidget> {
         "likes": nblike,
         // ignore: avoid_print
       }).then((value) => print("Donnée mis à jour"));
-    } catch (e) {
-      // ignore: avoid_print
-      print(e.toString());
-    }
-  }
-
-  void supprimer(String id, String nom) {
-    try {
-      FirebaseFirestore.instance
-          .collection("Films")
-          .doc(id)
-          .delete()
-          .then((value) => print("Film: $nom a été supprimer avec succés"));
     } catch (e) {
       // ignore: avoid_print
       print(e.toString());
@@ -208,7 +196,48 @@ class _FilmsWidgetState extends State<FilmsWidget> {
                                     ),
                                     IconButton(
                                       onPressed: () {
-                                        supprimer(document.id, film["nom"]);
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Center(
+                                              child: Wrap(children: [
+                                                const Center(
+                                                  child: Text(
+                                                      "Voulez-vous supprimer ? "),
+                                                ),
+                                                Center(child: Text(film['nom']))
+                                              ]),
+                                            ),
+                                            content: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                Colors.red),
+                                                    onPressed: () {
+                                                      supprimerFilm(
+                                                          document.id);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("Oui")),
+                                                ElevatedButton(
+                                                    style: const ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStatePropertyAll(
+                                                                Colors
+                                                                    .greenAccent)),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("Non")),
+                                              ],
+                                            ),
+                                          ),
+                                        );
                                       },
                                       icon: const Icon(
                                         Icons.delete,
@@ -217,11 +246,6 @@ class _FilmsWidgetState extends State<FilmsWidget> {
                                     ),
                                   ],
                                 ),
-                                //   Column(
-                                //     children: nouvelle.map((f) {
-                                //       return Container();
-                                //     }).toList(),
-                                //   )
                               ],
                             ),
                           )
